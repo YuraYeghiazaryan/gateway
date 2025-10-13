@@ -16,7 +16,7 @@ repositories {
 dependencies {
     // --- Spring Boot Core ---
     implementation("org.springframework.boot:spring-boot-starter-webflux") // for reactive gateway
-    implementation("org.springframework.boot:spring-boot-starter-security")
+//    implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
 
     // --- Spring Cloud Gateway ---

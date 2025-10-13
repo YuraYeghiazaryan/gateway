@@ -1,24 +1,16 @@
-#server:
-#  port: 8081
-#
-#spring:
-#  cloud:
-#    gateway:
-#      routes:
-#        - id: lunch_service
-#          uri: http://localhost:8080
-#          predicates:
-#            - Path=/api/**                    # forward all /api/** requests
-#          filters:
-#            - RemoveRequestHeader=Cookie
-#            - PreserveHostHeader=true
-#logging:
-#  level:
-#    org.springframework.cloud.gateway: DEBUG
-
 server:
   port: 8081
 
 spring:
   application:
     name: gateway
+
+  cloud:
+    gateway:
+      routes:
+        - id: lunch_service
+          uri: http://localhost:8080
+          predicates:
+            - Path=/api/v1/**         # Match all Lunch API paths
+          filters:
+            - StripPrefix=0           # Keep full path since Lunch also uses /api/v1
