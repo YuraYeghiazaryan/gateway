@@ -16,17 +16,20 @@ repositories {
 dependencies {
     // --- Spring Boot Core ---
     implementation("org.springframework.boot:spring-boot-starter-webflux") // for reactive gateway
-//    implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
 
     // --- Spring Cloud Gateway ---
     implementation("org.springframework.cloud:spring-cloud-starter-gateway")
     implementation("org.springframework.cloud:spring-cloud-starter-loadbalancer")
 
-    // --- JWT support ---
-    implementation("io.jsonwebtoken:jjwt-api:0.11.5")
-    runtimeOnly("io.jsonwebtoken:jjwt-impl:0.11.5")
-    runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.11.5")
+    implementation("org.springframework.boot:spring-boot-starter-security")
+    implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
+    implementation("org.springframework.security:spring-security-oauth2-jose:7.0.0-M3") // For JWT decoding
+
+//    // --- JWT support ---
+//    implementation("io.jsonwebtoken:jjwt-api:0.11.5")
+//    runtimeOnly("io.jsonwebtoken:jjwt-impl:0.11.5")
+//    runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.11.5")
 
     // Kotlin
     implementation("org.jetbrains.kotlin:kotlin-reflect")
@@ -36,6 +39,7 @@ dependencies {
 
 dependencyManagement {
     imports {
+        mavenBom("org.springframework.boot:spring-boot-dependencies:3.4.3")
         mavenBom("org.springframework.cloud:spring-cloud-dependencies:2024.0.0")
     }
 }
