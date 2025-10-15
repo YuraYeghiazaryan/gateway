@@ -29,5 +29,4 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          secret-key: "change-me-to-a-long-random-string-which-is-more-than-32-characters"   # must match Auth service secret
-          issuer-uri: "http://localhost:8082"
+          jwk-set-uri: http://localhost:8082/oauth2/jwks
