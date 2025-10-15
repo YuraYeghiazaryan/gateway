@@ -9,7 +9,6 @@ spring:
     gateway:
       routes:
         # --- Route for Lunch service ---
-        # TODO add lunch to path
         - id: lunch_service
           uri: http://localhost:8080
           predicates:
