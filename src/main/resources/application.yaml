@@ -13,9 +13,10 @@ spring:
         - id: lunch_service
           uri: http://localhost:8080
           predicates:
-            - Path=/api/v1/**         # Match all Lunch API paths
+            - Path=/api/v1/lunch/**         # Match all Lunch API paths
           filters:
-            - StripPrefix=0           # Keep full path since Lunch also uses /api/v1
+            - StripPrefix=0
+            - RewritePath=/api/v1/lunch/(?<rest>.*), /api/v1/${rest} # remove lunch from path and send to Lunch service
 
         # --- Route for Auth service ---
         - id: auth_service
