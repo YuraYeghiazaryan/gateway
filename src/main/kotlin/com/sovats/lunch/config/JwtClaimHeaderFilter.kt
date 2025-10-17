@@ -3,6 +3,7 @@ package com.sovats.lunch.config
 import org.springframework.cloud.gateway.filter.GatewayFilterChain
 import org.springframework.cloud.gateway.filter.GlobalFilter
 import org.springframework.core.Ordered
+import org.springframework.security.core.Authentication
 import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken
 import org.springframework.stereotype.Component
@@ -10,33 +11,31 @@ import org.springframework.web.server.ServerWebExchange
 import reactor.core.publisher.Mono
 
 @Component
-class JwtClaimsHeaderFilter : GlobalFilter, Ordered {
-
+class JwtClaimsHeaderFilter: GlobalFilter, Ordered {
     override fun filter(exchange: ServerWebExchange, chain: GatewayFilterChain): Mono<Void> {
-        // TODO
-        val path = exchange.request.path.toString()
 
-        // Skip public endpoints (login/signup/etc.)
-        if (path.startsWith("/api/v1/auth/")) {
-            return chain.filter(exchange)
-        }
+        return exchange.getPrincipal<Authentication>()
+            .flatMap { principal ->
+                if (principal is JwtAuthenticationToken) {
+                    val jwt: Jwt = principal.token
+                    val userId = jwt.subject ?: jwt.claims["sub"]?.toString()
 
-        val principalMono = exchange.getPrincipal<JwtAuthenticationToken>()
+                    // Mutate the request to add the X-User-Id header
+                    val mutatedRequest = exchange.request.mutate()
+                        .header("X-User-Id", userId)
+                        .build()
 
-        return principalMono.flatMap { principal ->
-            val jwt: Jwt = principal.token
-            val userId = jwt.subject ?: jwt.claims["sub"]?.toString()
+                    val mutatedExchange = exchange.mutate()
+                        .request(mutatedRequest)
+                        .build()
 
-            val mutatedRequest = exchange.request.mutate()
-                .header("X-User-Id", userId)
-                .build()
-
-            val mutatedExchange = exchange.mutate()
-                .request(mutatedRequest)
-                .build()
-
-            chain.filter(mutatedExchange)
-        }
+                    chain.filter(mutatedExchange)
+                } else {
+                    // No JWT authentication → skip header injection
+                    chain.filter(exchange)
+                }
+            }
+            .switchIfEmpty(chain.filter(exchange)) // In case there's no principal at all
     }
 
     override fun getOrder(): Int = -1 // ensure runs before routing

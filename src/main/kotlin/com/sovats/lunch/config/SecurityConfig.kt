@@ -14,15 +14,13 @@ class SecurityConfig {
     fun securityWebFilterChain(http: ServerHttpSecurity): SecurityWebFilterChain {
         return http
             .csrf { it.disable() }
-            .authorizeExchange { exchanges ->
-                exchanges
-                    /** Allow signup/login without token */
-                    .pathMatchers("api/v1/auth/**").permitAll()
-                    /** Everything else requires auth */
-                    .anyExchange().authenticated()
+            .authorizeExchange {
+                it.pathMatchers(
+                    "/api/v1/auth/**",      // public Auth endpoints
+                ).permitAll()
+                it.anyExchange().authenticated()
             }
-            .oauth2ResourceServer { resourceServer ->
-                resourceServer.jwt { jwt -> jwt.jwtDecoder(jwtDecoder()) } }
+            .oauth2ResourceServer { it.jwt {} }
             .build()
     }
 
