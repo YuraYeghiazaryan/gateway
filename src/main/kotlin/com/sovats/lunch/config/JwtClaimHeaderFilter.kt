@@ -35,7 +35,7 @@ class JwtClaimsHeaderFilter: GlobalFilter, Ordered {
                     chain.filter(exchange)
                 }
             }
-            .switchIfEmpty(chain.filter(exchange)) // In case there's no principal at all
+            .switchIfEmpty(chain.filter(exchange))
     }
 
     override fun getOrder(): Int = -1 // ensure runs before routing
