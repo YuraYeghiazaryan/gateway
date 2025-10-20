@@ -1,5 +1,6 @@
 package com.sovats.lunch.config
 
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.web.server.ServerHttpSecurity
@@ -8,7 +9,10 @@ import org.springframework.security.web.server.SecurityWebFilterChain
 import javax.crypto.spec.SecretKeySpec
 
 @Configuration
-class SecurityConfig {
+class SecurityConfig(
+    @Value("\${spring.security.oauth2.resourceserver.jwt.secret-key}")
+    private val jwtSecret: String
+) {
 
     @Bean
     fun securityWebFilterChain(http: ServerHttpSecurity): SecurityWebFilterChain {
@@ -26,9 +30,7 @@ class SecurityConfig {
 
     @Bean
     fun jwtDecoder(): NimbusReactiveJwtDecoder {
-        val secret = "change-me-to-a-long-random-string-which-is-more-than-32-characters" // same as in Auth service
-        val keyBytes = secret.toByteArray()
-        val key = SecretKeySpec(keyBytes, "HmacSHA256")
+        val key = SecretKeySpec(jwtSecret.toByteArray(), "HmacSHA256")
         return NimbusReactiveJwtDecoder.withSecretKey(key).build()
     }
 }

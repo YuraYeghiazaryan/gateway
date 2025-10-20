@@ -30,3 +30,4 @@ spring:
       resourceserver:
         jwt:
           jwk-set-uri: http://localhost:8082/oauth2/jwks
+          secret-key: ${JWT_SECRET}
