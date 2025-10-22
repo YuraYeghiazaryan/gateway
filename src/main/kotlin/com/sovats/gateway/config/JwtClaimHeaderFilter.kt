@@ -1,4 +1,4 @@
-package com.sovats.lunch.config
+package com.sovats.gateway.config
 
 import org.springframework.cloud.gateway.filter.GatewayFilterChain
 import org.springframework.cloud.gateway.filter.GlobalFilter

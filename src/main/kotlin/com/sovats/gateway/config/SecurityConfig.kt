@@ -1,4 +1,4 @@
-package com.sovats.lunch.config
+package com.sovats.gateway.config
 
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
